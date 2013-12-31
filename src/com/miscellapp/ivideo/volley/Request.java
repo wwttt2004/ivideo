@@ -16,18 +16,16 @@
 
 package com.miscellapp.ivideo.volley;
 
-import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.text.TextUtils;
-
 import com.miscellapp.ivideo.volley.VolleyLog.MarkerLog;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -53,43 +51,67 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         int DELETE = 3;
     }
 
-    /** An event log tracing the lifetime of this request; for debugging. */
+    /**
+     * An event log tracing the lifetime of this request; for debugging.
+     */
     private final MarkerLog mEventLog = MarkerLog.ENABLED ? new MarkerLog() : null;
 
-    /** Request method of this request.  Currently supports GET, POST, PUT, and DELETE. */
+    /**
+     * Request method of this request.  Currently supports GET, POST, PUT, and DELETE.
+     */
     private final int mMethod;
 
-    /** URL of this request. */
+    /**
+     * URL of this request.
+     */
     private final String mUrl;
 
-    /** Default tag for {@link android.net.TrafficStats}. */
+    /**
+     * Default tag for {@link android.net.TrafficStats}.
+     */
     private final int mDefaultTrafficStatsTag;
 
-    /** Listener interface for errors. */
+    /**
+     * Listener interface for errors.
+     */
     private final Response.ErrorListener mErrorListener;
 
-    /** Sequence number of this request, used to enforce FIFO ordering. */
+    /**
+     * Sequence number of this request, used to enforce FIFO ordering.
+     */
     private Integer mSequence;
 
-    /** The request queue this request is associated with. */
+    /**
+     * The request queue this request is associated with.
+     */
     private RequestQueue mRequestQueue;
 
-    /** Whether or not responses to this request should be cached. */
+    /**
+     * Whether or not responses to this request should be cached.
+     */
     private boolean mShouldCache = true;
 
-    /** Whether or not this request has been canceled. */
+    /**
+     * Whether or not this request has been canceled.
+     */
     private boolean mCanceled = false;
 
-    /** Whether or not a response has been delivered for this request yet. */
+    /**
+     * Whether or not a response has been delivered for this request yet.
+     */
     private boolean mResponseDelivered = false;
 
     // A cheap variant of request tracing used to dump slow requests.
     private long mRequestBirthTime = 0;
 
-    /** Threshold at which we should log the request (even when debug logging is not enabled). */
+    /**
+     * Threshold at which we should log the request (even when debug logging is not enabled).
+     */
     private static final long SLOW_REQUEST_THRESHOLD_MS = 3000;
 
-    /** The retry policy for this request. */
+    /**
+     * The retry policy for this request.
+     */
     private RetryPolicy mRetryPolicy;
 
     /**
@@ -99,7 +121,9 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      */
     private Cache.Entry mCacheEntry = null;
 
-    /** An opaque token tagging this request; used for bulk cancellation. */
+    /**
+     * An opaque token tagging this request; used for bulk cancellation.
+     */
     private Object mTag;
 
     /**
@@ -108,7 +132,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * is provided by subclasses, who have a better idea of how to deliver an
      * already-parsed response.
      *
-     * @deprecated Use {@link #Request(int, String, com.android.volley.Response.ErrorListener)}.
+     * @deprecated Use {@link #Request(int, String, com.miscellapp.ivideo.volley.Response.ErrorListener)}.
      */
     public Request(String url, Response.ErrorListener listener) {
         this(Method.DEPRECATED_GET_OR_POST, url, listener);
@@ -126,7 +150,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         mErrorListener = listener;
         setRetryPolicy(new DefaultRetryPolicy());
 
-        mDefaultTrafficStatsTag = TextUtils.isEmpty(url) ? 0: Uri.parse(url).getHost().hashCode();
+        mDefaultTrafficStatsTag = TextUtils.isEmpty(url) ? 0 : Uri.parse(url).getHost().hashCode();
     }
 
     /**
@@ -146,6 +170,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
 
     /**
      * Returns this request's tag.
+     *
      * @see com.miscellapp.ivideo.volley.Request#setTag(Object)
      */
     public Object getTag() {
@@ -179,7 +204,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
 
     /**
      * Notifies the request queue that this request has finished (successfully or with error).
-     *
+     * <p/>
      * <p>Also dumps all events from this request's event log; for debugging.</p>
      */
     void finish(final String tag) {
@@ -284,21 +309,24 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * Returns a list of extra HTTP headers to go along with this request. Can
      * throw {@link AuthFailureError} as authentication may be required to
      * provide these values.
+     *
      * @throws AuthFailureError In the event of auth failure
      */
     public Map<String, String> getHeaders() throws AuthFailureError {
-        return Collections.emptyMap();
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6");
+        return headers;
     }
 
     /**
      * Returns a Map of POST parameters to be used for this request, or null if
      * a simple GET should be used.  Can throw {@link AuthFailureError} as
      * authentication may be required to provide these values.
-     *
+     * <p/>
      * <p>Note that only one of getPostParams() and getPostBody() can return a non-null
      * value.</p>
-     * @throws AuthFailureError In the event of auth failure
      *
+     * @throws AuthFailureError In the event of auth failure
      * @deprecated Use {@link #getParams()} instead.
      */
     protected Map<String, String> getPostParams() throws AuthFailureError {
@@ -308,13 +336,13 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     /**
      * Returns which encoding should be used when converting POST parameters returned by
      * {@link #getPostParams()} into a raw POST body.
-     *
+     * <p/>
      * <p>This controls both encodings:
      * <ol>
-     *     <li>The string encoding used when converting parameter names and values into bytes prior
-     *         to URL encoding them.</li>
-     *     <li>The string encoding used when converting the URL encoded parameters into a raw
-     *         byte array.</li>
+     * <li>The string encoding used when converting parameter names and values into bytes prior
+     * to URL encoding them.</li>
+     * <li>The string encoding used when converting the URL encoded parameters into a raw
+     * byte array.</li>
      * </ol>
      *
      * @deprecated Use {@link #getParamsEncoding()} instead.
@@ -334,7 +362,6 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * Returns the raw POST body to be sent.
      *
      * @throws AuthFailureError In the event of auth failure
-     *
      * @deprecated Use {@link #getBody()} instead.
      */
     public byte[] getPostBody() throws AuthFailureError {
@@ -352,7 +379,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     /**
      * Returns a Map of parameters to be used for a POST or PUT request.  Can throw
      * {@link AuthFailureError} as authentication may be required to provide these values.
-     *
+     * <p/>
      * <p>Note that you can directly override {@link #getBody()} for custom data.</p>
      *
      * @throws AuthFailureError in the event of auth failure
@@ -364,13 +391,13 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     /**
      * Returns which encoding should be used when converting POST or PUT parameters returned by
      * {@link #getParams()} into a raw POST or PUT body.
-     *
+     * <p/>
      * <p>This controls both encodings:
      * <ol>
-     *     <li>The string encoding used when converting parameter names and values into bytes prior
-     *         to URL encoding them.</li>
-     *     <li>The string encoding used when converting the URL encoded parameters into a raw
-     *         byte array.</li>
+     * <li>The string encoding used when converting parameter names and values into bytes prior
+     * to URL encoding them.</li>
+     * <li>The string encoding used when converting the URL encoded parameters into a raw
+     * byte array.</li>
      * </ol>
      */
     protected String getParamsEncoding() {
@@ -480,6 +507,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * and return an appropriate response type. This method will be
      * called from a worker thread.  The response will not be delivered
      * if you return null.
+     *
      * @param response Response from the network
      * @return The parsed response, or null in the case of an error
      */
@@ -487,7 +515,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
 
     /**
      * Subclasses can override this method to parse 'networkError' and return a more specific error.
-     *
+     * <p/>
      * <p>The default implementation just returns the passed 'networkError'.</p>
      *
      * @param volleyError the error retrieved from the network
@@ -501,8 +529,9 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * Subclasses must implement this to perform delivery of the parsed
      * response to their listeners.  The given response is guaranteed to
      * be non-null; responses that fail to parse are not delivered.
+     *
      * @param response The parsed response returned by
-     * {@link #parseNetworkResponse(NetworkResponse)}
+     *                 {@link #parseNetworkResponse(NetworkResponse)}
      */
     abstract protected void deliverResponse(T response);
 

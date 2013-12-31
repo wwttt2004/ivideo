@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-        >
-    <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Hello World, MainActivity"
-            />
+              android:background="@color/background"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="@dimen/action_bar_height"
+                    android:background="@drawable/action_bar_tile">
+        <TextView
+                android:id="@+id/title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_centerInParent="true"
+                android:textColor="@android:color/white"/>
+    </RelativeLayout>
+    <GridView
+            android:id="@+id/grid_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="2"
+            android:verticalSpacing="12dp"
+            android:horizontalSpacing="12dp"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:scrollbarThumbHorizontal="@drawable/scrollbar_vertical_track"
+            android:scrollbarTrackVertical="@drawable/scrollbar_vertical_track"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
+            android:scrollbarSize="4dp"
+            android:fadingEdge="none"
+            android:listSelector="@color/transparent"
+            android:stretchMode="columnWidth"/>
 </LinearLayout>
 

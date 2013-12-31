@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ivideo</string>
+    <string name="loading">载入中&#8230;</string>
+    <string name="occupied_size">緩存視頻占用%1$s</string>
 </resources>

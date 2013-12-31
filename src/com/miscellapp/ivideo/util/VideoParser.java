@@ -1,4 +1,4 @@
-package com.miscellapp.ivideo.utils;
+package com.miscellapp.ivideo.util;
 
 import com.miscellapp.ivideo.model.Video;
 import org.jsoup.Jsoup;
@@ -22,7 +22,7 @@ public class VideoParser {
         if (null == doc) return null;
 
         ArrayList<Video> videoList = new ArrayList<Video>();
-        Pattern p = Pattern.compile("(v_|vid-)(\\w+).html");
+        Pattern p = Pattern.compile("(v_|vid-)(\\w+)\\.html");
 
         Elements topList = doc.select("ul.js_switch_ct");
         if (null != topList && topList.size() > 0) {
@@ -129,7 +129,7 @@ public class VideoParser {
         if (null == element) return null;
 
         ArrayList<Video> videoList = new ArrayList<Video>();
-        Pattern p = Pattern.compile("id_(\\w+).html");
+        Pattern p = Pattern.compile("id_(\\w+)\\.html");
 
         Elements items = element.getElementsByClass("v");
         for (Element item : items) {

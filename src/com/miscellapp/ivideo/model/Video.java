@@ -10,6 +10,7 @@ public class Video {
     public String duration;
     public String url;
     public String localPath;
+    public String localImage;
 
     public long updateTime;
     public long watchedTime;
